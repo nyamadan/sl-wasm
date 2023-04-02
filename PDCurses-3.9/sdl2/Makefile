@@ -57,7 +57,7 @@ endif
 ifeq ($(OS)_$(DLL),Windows_NT_Y)
 	CFLAGS += -DPDC_DLL_BUILD
 	LIBEXE = $(CC)
-	LIBFLAGS = -Wl,--out-implib,pdcurses.a -shared -o
+	LIBFLAGS = -Wl,--out-implib,libpdcurses.a -shared -o
 	LIBCURSES = pdcurses.dll
 	CLEAN = $(LIBCURSES) *.a
 	RESOURCE = pdcurses.o
@@ -66,7 +66,7 @@ ifeq ($(OS)_$(DLL),Windows_NT_Y)
 else
 	LIBEXE = $(AR)
 	LIBFLAGS = rcv
-	LIBCURSES = pdcurses.a
+	LIBCURSES = libpdcurses.a
 	LDFLAGS = $(LIBCURSES) $(SLIBS)
 	CLEAN = *.a
 endif

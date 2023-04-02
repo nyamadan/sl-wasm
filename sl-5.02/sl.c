@@ -36,6 +36,10 @@
 /* sl version 1.00 : SL runs vomitting out smoke.                            */
 /*                                              by Toyoda Masashi 1992/12/11 */
 
+#ifdef EMSCRIPTEN
+#include <emscripten/emscripten.h>
+#endif
+
 #include <curses.h>
 #include <signal.h>
 #include <unistd.h>
@@ -78,6 +82,42 @@ void option(char *str)
     }
 }
 
+#ifdef EMSCRIPTEN
+
+EMSCRIPTEN_KEEPALIVE void stop() {
+  emscripten_cancel_main_loop();
+}
+
+void update(void *pData) {
+  int *p_x = (int *)pData;
+  int x = *p_x;
+  if (LOGO == 1) {
+    if (add_sl(x) == ERR) {
+      mvcur(0, COLS - 1, LINES - 1, 0);
+      endwin();
+      return;
+    }
+  } else if (C51 == 1) {
+    if (add_C51(x) == ERR) {
+      mvcur(0, COLS - 1, LINES - 1, 0);
+      endwin();
+      return;
+    }
+  } else {
+    if (add_D51(x) == ERR) {
+      mvcur(0, COLS - 1, LINES - 1, 0);
+      endwin();
+      return;
+    }
+  }
+  getch();
+  refresh();
+  --x;
+
+  *p_x = x;
+}
+#endif
+
 int main(int argc, char *argv[])
 {
     int x, i;
@@ -94,7 +134,7 @@ int main(int argc, char *argv[])
     nodelay(stdscr, TRUE);
     leaveok(stdscr, TRUE);
     scrollok(stdscr, FALSE);
-
+#ifndef EMSCRIPTEN
     for (x = COLS - 1; ; --x) {
         if (LOGO == 1) {
             if (add_sl(x) == ERR) break;
@@ -111,6 +151,10 @@ int main(int argc, char *argv[])
     }
     mvcur(0, COLS - 1, LINES - 1, 0);
     endwin();
+#else
+  x = COLS - 1;
+  emscripten_set_main_loop_arg(update, &x, 50, 1);
+#endif
 }
 
 
