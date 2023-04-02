@@ -7,19 +7,38 @@
     <title>PDCurses</title>
   </head>
   <body>
+    <h1>SL</h1>
+    <div>
+      <button id="run">run</button>
+    </div>
     <canvas id="canvas"></canvas>
     <script type="module">
       // @ts-check
       import SL from "./sl.js";
 
-      async function run() {
-        const sl = await SL({
+      /**
+       * @type {{callMain(args?: readonly string[]): void, _stop(): void} | undefined}
+       */
+      let sl;
+      const setup = async () => {
+        sl = await SL({
           canvas: document.getElementById("canvas"),
         });
-        sl.callMain([]);
-      }
+      };
+      setup();
 
-      run();
+      const run = document.getElementById("run");
+      run?.addEventListener(
+        "click",
+        () => {
+          if (sl == null) {
+            return;
+          }
+          sl._stop();
+          sl.callMain();
+        },
+        false
+      );
     </script>
   </body>
 </html>

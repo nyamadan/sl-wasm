@@ -1,5 +1,5 @@
 diff --git a/sl-5.02/sl.c b/sl-5.02/sl.c
-index d8f2d75..ebbfc64 100644
+index d8f2d75..370ec67 100644
 --- a/sl-5.02/sl.c
 +++ b/sl-5.02/sl.c
 @@ -36,6 +36,10 @@
@@ -13,11 +13,16 @@ index d8f2d75..ebbfc64 100644
  #include <curses.h>
  #include <signal.h>
  #include <unistd.h>
-@@ -78,6 +82,40 @@ void option(char *str)
+@@ -78,6 +82,42 @@ void option(char *str)
      }
  }
  
 +#ifdef EMSCRIPTEN
++
++EMSCRIPTEN_KEEPALIVE void stop() {
++  emscripten_cancel_main_loop();
++}
++
 +void update(void *pData) {
 +  int *p_x = (int *)pData;
 +  int x = *p_x;
@@ -25,21 +30,18 @@ index d8f2d75..ebbfc64 100644
 +    if (add_sl(x) == ERR) {
 +      mvcur(0, COLS - 1, LINES - 1, 0);
 +      endwin();
-+      emscripten_cancel_main_loop();
 +      return;
 +    }
 +  } else if (C51 == 1) {
 +    if (add_C51(x) == ERR) {
 +      mvcur(0, COLS - 1, LINES - 1, 0);
 +      endwin();
-+      emscripten_cancel_main_loop();
 +      return;
 +    }
 +  } else {
 +    if (add_D51(x) == ERR) {
 +      mvcur(0, COLS - 1, LINES - 1, 0);
 +      endwin();
-+      emscripten_cancel_main_loop();
 +      return;
 +    }
 +  }
@@ -54,7 +56,7 @@ index d8f2d75..ebbfc64 100644
  int main(int argc, char *argv[])
  {
      int x, i;
-@@ -94,7 +132,7 @@ int main(int argc, char *argv[])
+@@ -94,7 +134,7 @@ int main(int argc, char *argv[])
      nodelay(stdscr, TRUE);
      leaveok(stdscr, TRUE);
      scrollok(stdscr, FALSE);
@@ -63,7 +65,7 @@ index d8f2d75..ebbfc64 100644
      for (x = COLS - 1; ; --x) {
          if (LOGO == 1) {
              if (add_sl(x) == ERR) break;
-@@ -111,6 +149,10 @@ int main(int argc, char *argv[])
+@@ -111,6 +151,10 @@ int main(int argc, char *argv[])
      }
      mvcur(0, COLS - 1, LINES - 1, 0);
      endwin();
