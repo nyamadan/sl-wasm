@@ -1,103 +1,13 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SL</title>
-    <style>
-      .container {
-        position: relative;
-        background: #000;
-        width: 640px;
-        height: 400px;
-      }
-
-      #canvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        pointer-events: none;
-        touch-action: none;
-      }
-
-      #run {
-        position: absolute;
-        display: block;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: transparent;
-        background-repeat: no-repeat;
-        border: none;
-        cursor: pointer;
-        overflow: hidden;
-        outline: none;
-      }
-    </style>
+    <title>Vite + React + TS</title>
   </head>
   <body>
-    <h1>SL</h1>
-    <div class="container">
-      <canvas id="canvas"></canvas>
-      <button id="run"></button>
-    </div>
-    <script type="module">
-      // @ts-check
-      import SL from "./dist/sl.mjs";
-
-      const main = async () => {
-        /**
-         * @type {{
-         * callMain(args?: readonly string[]): void,
-         * _update(x: number): number,
-         * _get_cols(): number,
-         * _get_lines(): number,
-         * _stop(): void,
-         * }}
-         */
-        const sl = await SL({
-          canvas: document.getElementById("canvas"),
-        });
-
-        const title = document.title;
-        sl.callMain();
-        document.title = title;
-
-        const cols = sl._get_cols();
-        const lines = sl._get_lines();
-
-        /**
-         * @type {Readonly<{t: number, x: number}> | null}
-         */
-        let state = null;
-
-        document.querySelector("#run").addEventListener(
-          "click",
-          function onRunButton() {
-            state = {
-              t: Date.now(),
-              x: cols,
-            };
-          },
-          false
-        );
-
-        function update() {
-          requestAnimationFrame(update);
-          if (state == null) {
-            return;
-          }
-
-          const x = (cols - 1 - (Date.now() - state.t) / 40) | 0;
-          if (state.x !== x) {
-            state = sl._update(x) !== -1 ? { ...state, x } : null;
-          }
-        }
-        requestAnimationFrame(update);
-      };
-      main();
-    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
