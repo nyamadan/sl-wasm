@@ -16,5 +16,5 @@ ln -f -s PDCurses-3.9/sdl2/pdcurses.a libpdcurses.a
 
 curl -L -o "sl-5.02.tar.gz" "https://github.com/mtoyoda/sl/archive/refs/tags/5.02.tar.gz"
 tar -xvzf "sl-5.02.tar.gz"
-patch -p1 < ./sl-5.02.patch 
+git apply ./sl-5.02.patch 
 emmake make
