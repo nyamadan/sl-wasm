@@ -4,41 +4,77 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PDCurses</title>
+    <title>SL</title>
+    <style>
+      #canvas {
+        background: #000;
+        pointer-events: none;
+        touch-action: none;
+      }
+    </style>
   </head>
   <body>
     <h1>SL</h1>
     <div>
       <button id="run">run</button>
     </div>
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas" width="640" height="400"></canvas>
     <script type="module">
       // @ts-check
-      import SL from "./sl.js";
+      import SL from "./dist/sl.mjs";
 
-      /**
-       * @type {{callMain(args?: readonly string[]): void, _stop(): void} | undefined}
-       */
-      let sl;
-      const setup = async () => {
-        sl = await SL({
+      const main = async () => {
+        /**
+         * @type {{
+         * callMain(args?: readonly string[]): void,
+         * _update(x: number): number,
+         * _get_cols(): number,
+         * _get_lines(): number,
+         * _stop(): void,
+         * }}
+         */
+        const sl = await SL({
           canvas: document.getElementById("canvas"),
         });
-      };
-      setup();
 
-      const run = document.getElementById("run");
-      run?.addEventListener(
-        "click",
-        () => {
-          if (sl == null) {
+        const title = document.title;
+        sl.callMain();
+        document.title = title;
+
+        const cols = sl._get_cols();
+        const lines = sl._get_lines();
+
+        /**
+         * @type {{t: number, x: number} | null}
+         */
+        let state = null;
+
+        document.querySelector("#run").addEventListener(
+          "click",
+          function onRunButton() {
+            state = {
+              t: Date.now(),
+              x: cols,
+            };
+          },
+          false
+        );
+
+        function update() {
+          requestAnimationFrame(update);
+          if (state == null) {
             return;
           }
-          sl._stop();
-          sl.callMain();
-        },
-        false
-      );
+
+          const x = (cols - 1 - (Date.now() - state.t) / 40) | 0;
+          if (state.x !== x) {
+            sl._update(x);
+            state.x = x;
+          }
+        }
+        requestAnimationFrame(update);
+      };
+      main();
     </script>
   </body>
 </html>
