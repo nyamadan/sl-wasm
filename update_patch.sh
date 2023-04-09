@@ -1,3 +1,4 @@
 #! /bin/sh
 set -eux
-git diff 385746b268e2a1d71e7ca68a73ff02ae29d1eae6 sl -- sl-5.02 > sl-5.02.patch
+git diff c326a67d315356c741dc38643b7b12a90601588d sl -- sl-5.02 > sl-5.02.patch
+git diff c326a67d315356c741dc38643b7b12a90601588d sl -- PDCurses-3.9 > PDCurses-3.9.patch
