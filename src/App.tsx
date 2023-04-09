@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
-import SL from "../dist/sl";
 import s from "./App.module.css";
+import SL from "./assets/sl";
 
 function assertsIsNotNull<T>(x: T): asserts x is NonNullable<T> {
   if (x == null) {
