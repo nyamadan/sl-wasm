@@ -8,11 +8,10 @@ cd "$(dirname "$0")"
 
 curl -L  -o "PDCurses-3.9.tar.gz" "https://github.com/wmcbrine/PDCurses/archive/refs/tags/3.9.tar.gz"
 tar -xvzf "PDCurses-3.9.tar.gz"
+git apply ./PDCurses-3.9.patch 
 pushd PDCurses-3.9/sdl2
 emmake make
 popd
-
-ln -f -s PDCurses-3.9/sdl2/pdcurses.a libpdcurses.a
 
 curl -L -o "sl-5.02.tar.gz" "https://github.com/mtoyoda/sl/archive/refs/tags/5.02.tar.gz"
 tar -xvzf "sl-5.02.tar.gz"
