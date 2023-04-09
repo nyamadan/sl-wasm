@@ -6,19 +6,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SL</title>
     <style>
-      #canvas {
+      .container {
+        position: relative;
         background: #000;
+        width: 640px;
+        height: 400px;
+      }
+
+      #canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
         pointer-events: none;
         touch-action: none;
+      }
+
+      #run {
+        position: absolute;
+        display: block;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+        background-repeat: no-repeat;
+        border: none;
+        cursor: pointer;
+        overflow: hidden;
+        outline: none;
       }
     </style>
   </head>
   <body>
     <h1>SL</h1>
-    <div>
-      <button id="run">run</button>
+    <div class="container">
+      <canvas id="canvas"></canvas>
+      <button id="run"></button>
     </div>
-    <canvas id="canvas" width="640" height="400"></canvas>
     <script type="module">
       // @ts-check
       import SL from "./dist/sl.mjs";
@@ -45,7 +69,7 @@
         const lines = sl._get_lines();
 
         /**
-         * @type {{t: number, x: number} | null}
+         * @type {Readonly<{t: number, x: number}> | null}
          */
         let state = null;
 
@@ -68,8 +92,7 @@
 
           const x = (cols - 1 - (Date.now() - state.t) / 40) | 0;
           if (state.x !== x) {
-            sl._update(x);
-            state.x = x;
+            state = sl._update(x) !== -1 ? { ...state, x } : null;
           }
         }
         requestAnimationFrame(update);
