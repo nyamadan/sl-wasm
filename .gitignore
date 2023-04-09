@@ -4,7 +4,7 @@ PDCurses-3.9.tar.gz
 sl-5.02/
 sl-5.02.tar.gz
 
-src/assets/
+src/assets/sl.mjs
 
 # Logs
 logs
